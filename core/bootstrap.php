@@ -1,11 +1,22 @@
 <?php 
 
-$app=[];
 
-$app['config'] = require 'config.php';
-require 'core/router.php';
-require 'core/request.php';  
-require 'core/database/connection.php';
-require 'core/database/queryBuilder.php';
+App::bind('config', require 'config.php');
 
-$app['database'] = 	new queryBuilder(Connection::make($app['config']['database']));
+
+App::bind('database', new queryBuilder(
+	Connection::make(App::get('config')['database'])
+
+));
+
+function view($name, $data=[]){
+
+	extract($data);
+	return require "views/{$name}.view.php";
+}
+class Location{
+	function redirect($page){
+		return header ("Location:/crud-mvc/{$page}");
+
+	}
+}
